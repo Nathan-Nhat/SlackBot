@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -16,9 +17,9 @@ public class CoronaController {
 
 
     @GetMapping(value = "/api/corona")
-    public ResponseEntity<InsideText> getCoronaDetails(@RequestBody RequestBodyMapping requestBodyMapping) throws JsonProcessingException {
-        System.out.println(requestBodyMapping.getResponse_url());
-        serviceCorona.executeAsynchronously(requestBodyMapping.getResponse_url());
+    public ResponseEntity<InsideText> getCoronaDetails(@RequestParam(name = "response_url") String responseUrl) throws JsonProcessingException {
+        System.out.println(responseUrl);
+        serviceCorona.executeAsynchronously(responseUrl);
         return ResponseEntity.ok(new InsideText("mrkdwn", "Loading! Please wait..."));
     }
 }

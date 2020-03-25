@@ -4,6 +4,7 @@ import java.util.List;
 
 public class ResponseSlack {
     private String channel;
+    private String response_type;
     private List<InsideBlock> blocks;
 
     public ResponseSlack(){};
@@ -26,5 +27,13 @@ public class ResponseSlack {
 
     public void setBlocks(List<InsideBlock> blocks) {
         this.blocks = blocks;
+    }
+
+    public String getResponse_type() {
+        return response_type;
+    }
+
+    public void setResponse_type(String response_type) {
+        this.response_type = response_type;
     }
 }

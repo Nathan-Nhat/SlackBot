@@ -54,6 +54,7 @@ public class CoronaController {
         }
         ResponseSlack responseSlack = new ResponseSlack();
         responseSlack.setChannel("corona");
+        responseSlack.setResponse_type("in_channel");
         responseSlack.setBlocks(insideBlockList);
         return ResponseEntity.ok(responseSlack);
     }

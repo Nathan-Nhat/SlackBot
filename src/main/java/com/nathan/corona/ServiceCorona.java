@@ -10,8 +10,9 @@ public class ServiceCorona {
     private TaskExecutor taskExecutor;
     @Autowired
     private ExecuteThread executeThread;
-    public void executeAsynchronously(String reqUrl) {
+    public void executeAsynchronously(String reqUrl, String channelId) {
         executeThread.setReqUrl(reqUrl);
+        executeThread.setChannelId(channelId);
         taskExecutor.execute(executeThread);
     }
 }

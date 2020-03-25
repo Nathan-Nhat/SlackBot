@@ -25,7 +25,7 @@ public class ExecuteThread implements Runnable{
     private ObjectMapper objectMapper;
 
     private String reqUrl;
-
+    private String channelId;
     public ExecuteThread(){
     }
 
@@ -33,7 +33,10 @@ public class ExecuteThread implements Runnable{
     public void run() {
         List<InsideBlock> insideBlockList = new ArrayList<>();
         ResponseEntity<String> response = restTemplate.getForEntity("https://lab.isaaclin.cn/nCoV/api/area", String.class);
-        System.out.println(response.getBody());
+        InsideBlock insideBlockHeader = new InsideBlock();
+        insideBlockHeader.setType("section");
+        insideBlockHeader.setText(new InsideText("mrkdwn", "*Country* \t\t\t\t *Total Cases* \t\t\t\t *Total Deaths* \t\t\t\t *Total Recovered*"));
+        insideBlockList.add(insideBlockHeader);
         JsonNode root = null;
         try {
             root = objectMapper.readTree(response.getBody());
@@ -71,13 +74,14 @@ public class ExecuteThread implements Runnable{
             if(i >= 10) break;
         }
         ResponseSlack responseSlack = new ResponseSlack();
-        responseSlack.setChannel("corona");
+        responseSlack.setChannel(this.channelId);
         responseSlack.setResponse_type("in_channel");
         responseSlack.setBlocks(insideBlockList);
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<ResponseSlack> req = new HttpEntity<>(responseSlack, header);
-        restTemplate.postForObject(this.reqUrl, req, ResponseEntity.class);
+        ResponseEntity responseEntity = restTemplate.postForObject(this.reqUrl, req, ResponseEntity.class);
+        System.out.println(responseEntity);
     }
 
     public String getReqUrl() {
@@ -88,6 +92,14 @@ public class ExecuteThread implements Runnable{
         this.reqUrl = reqUrl;
     }
 
+    public String getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
+    }
+
     private InsideText convertObjectToInsideText(ResponseObject responseObject)
     {
         InsideText insideText = new InsideText();
@@ -96,7 +108,7 @@ public class ExecuteThread implements Runnable{
         long total = responseObject.getConfirmedCount();
         long death = responseObject.getDeadCount();
         long cured = responseObject.getCuredCount();
-        String s = country + "\t" + total + "\t" + death + "\t" + cured;
+        String s = country + "\t\t\t\t" + total + "\t\t\t\t" + death + "\t\t\t\t" + cured;
         insideText.setText(s);
         return insideText;
     }

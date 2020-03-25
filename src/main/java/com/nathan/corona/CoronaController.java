@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,9 +16,10 @@ public class CoronaController {
 
 
     @GetMapping(value = "/api/corona")
-    public ResponseEntity<InsideText> getCoronaDetails(@RequestParam(name = "response_url") String responseUrl) throws JsonProcessingException {
+    public ResponseEntity<ResponsePleaseWait> getCoronaDetails(@RequestParam(name = "response_url") String responseUrl
+    , @RequestParam(name = "channel_id") String channelId) throws JsonProcessingException {
         System.out.println(responseUrl);
-        serviceCorona.executeAsynchronously(responseUrl);
-        return ResponseEntity.ok(new InsideText("mrkdwn", "Loading! Please wait..."));
+        serviceCorona.executeAsynchronously(responseUrl, channelId);
+        return ResponseEntity.ok(new ResponsePleaseWait("in_channel", "mrkdwn", "Loading! Please wait..."));
     }
 }

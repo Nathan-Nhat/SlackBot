@@ -23,8 +23,8 @@ public class CoronaController {
     @Autowired
     private ObjectMapper objectMapper;
     @RequestMapping(value = "/api/corona")
-    public ResponseEntity<List<ResponseDTO>> getCoronaDetails() throws JsonProcessingException {
-        List<ResponseDTO> responseDTOList = new ArrayList<>();
+    public ResponseEntity<ResponseSlack> getCoronaDetails() throws JsonProcessingException {
+        List<InsideBlock> insideBlockList = new ArrayList<>();
         ResponseEntity<String> response = restTemplate.getForEntity("https://lab.isaaclin.cn/nCoV/api/area", String.class);
         JsonNode root = objectMapper.readTree(response.getBody());
         JsonNode result = root.path("results");
@@ -32,7 +32,10 @@ public class CoronaController {
         List<ResponseObject> responseObjects = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, ResponseObject.class));
         for (ResponseObject responseObject : responseObjects) {
             if (responseObject.getCountryEnglishName().equals("Vietnam")) {
-                responseDTOList.add(new ResponseDTO(responseObject.getCountryEnglishName(), responseObject.getConfirmedCount(), responseObject.getDeadCount(), responseObject.getCuredCount()));
+                InsideBlock insideBlock = new InsideBlock();
+                insideBlock.setType("section");
+                insideBlock.setText(convertObjectToInsideText(responseObject));
+                insideBlockList.add(insideBlock);
                 break;
             }
         }
@@ -41,11 +44,30 @@ public class CoronaController {
         int i = 0;
         for (ResponseObject responseObject : sortedObject){
             if (!responseObject.getCountryEnglishName().equals("Vietnam")){
-                responseDTOList.add(new ResponseDTO(responseObject.getCountryEnglishName(), responseObject.getConfirmedCount(), responseObject.getDeadCount(), responseObject.getCuredCount()));
+                InsideBlock insideBlock = new InsideBlock();
+                insideBlock.setType("section");
+                insideBlock.setText(convertObjectToInsideText(responseObject));
+                insideBlockList.add(insideBlock);
                 i++;
             }
             if(i >= 10) break;
         }
-        return ResponseEntity.ok(responseDTOList);
+        ResponseSlack responseSlack = new ResponseSlack();
+        responseSlack.setChannel("corona");
+        responseSlack.setBlocks(insideBlockList);
+        return ResponseEntity.ok(responseSlack);
+    }
+
+    private InsideText convertObjectToInsideText(ResponseObject responseObject)
+    {
+        InsideText insideText = new InsideText();
+        insideText.setType("mrkdwn");
+        String country = responseObject.getCountryEnglishName();
+        long total = responseObject.getConfirmedCount();
+        long death = responseObject.getDeadCount();
+        long cured = responseObject.getCuredCount();
+        String s = country + "\t" + total + "\t" + death + "\t" + cured;
+        insideText.setText(s);
+        return insideText;
     }
 }

@@ -35,7 +35,7 @@ public class ExecuteThread implements Runnable{
         ResponseEntity<String> response = restTemplate.getForEntity("https://lab.isaaclin.cn/nCoV/api/area", String.class);
         InsideBlock insideBlockHeader = new InsideBlock();
         insideBlockHeader.setType("section");
-        insideBlockHeader.setText(new InsideText("mrkdwn", "*Country* \t\t\t\t *Total Cases* \t\t\t\t *Total Deaths* \t\t\t\t *Total Recovered*"));
+        insideBlockHeader.setText(new InsideText("mrkdwn", "*Country* \t\t *Total Cases* \t\t *Total Deaths* \t\t *Total Recovered*"));
         insideBlockList.add(insideBlockHeader);
         JsonNode root = null;
         try {

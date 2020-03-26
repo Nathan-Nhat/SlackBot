@@ -75,7 +75,7 @@ public class ExecuteThread implements Runnable{
         }
         ResponseSlack responseSlack = new ResponseSlack();
         responseSlack.setChannel(this.channelId);
-        responseSlack.setResponse_type("in_channel");
+        responseSlack.setResponse_type("ephemeral");
         responseSlack.setBlocks(insideBlockList);
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_JSON);

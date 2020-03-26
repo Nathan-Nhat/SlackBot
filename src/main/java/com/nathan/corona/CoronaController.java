@@ -20,6 +20,6 @@ public class CoronaController {
     , @RequestParam(name = "channel_id") String channelId) throws JsonProcessingException {
         System.out.println(responseUrl);
         serviceCorona.executeAsynchronously(responseUrl, channelId);
-        return ResponseEntity.ok(new ResponsePleaseWait("in_channel", "mrkdwn", "Loading! Please wait..."));
+        return ResponseEntity.ok(new ResponsePleaseWait("ephemeral", "mrkdwn", "Loading! Please wait..."));
     }
 }
